@@ -8,24 +8,6 @@ console.log(galleryItems);
 const galleryContainer = document.querySelector(".gallery");
 console.log(galleryContainer);
 
-function createGalleryItemsMarkup(arr) {
-  return arr
-    .map(
-      ({ preview, original, description }) =>
-        `<li class="gallery__item">
-        <a class="gallery__link" href="${original}">
-          <img
-            class="gallery__image"
-            src="${preview}"
-            data-source="${original}"
-            alt="${description}"
-          />
-        </a>
-      </li>`
-    )
-    .join("");
-}
-
 galleryContainer.insertAdjacentHTML(
   "beforeend",
   createGalleryItemsMarkup(galleryItems)
@@ -49,4 +31,42 @@ function handlerGalleryItemClick(evt) {
     <img src="${modalImg}" width="800" height="600">
 `);
   instance.show();
+
+  closeModalbyEsc(instance);
+}
+
+function createGalleryItemsMarkup(arr) {
+  return arr
+    .map(
+      ({ preview, original, description }) =>
+        `<li class="gallery__item">
+        <a class="gallery__link" href="${original}">
+          <img
+            class="gallery__image"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}"
+          />
+        </a>
+      </li>`
+    )
+    .join("");
+}
+
+function closeModalbyEsc(modal) {
+  const isModalOpen = modal.visible();
+
+  if (isModalOpen) {
+    document.addEventListener("keydown", handlerModalClose);
+  } else if (!isModalOpen) {
+    document.removeEventListener("keydown", handlerModalClose);
+  }
+
+  function handlerModalClose(evt) {
+    if (evt.code !== "Escape") {
+      return;
+    }
+
+    modal.close();
+  }
 }
