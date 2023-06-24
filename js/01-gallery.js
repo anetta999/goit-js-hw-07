@@ -27,12 +27,28 @@ function handlerGalleryItemClick(evt) {
 
   const modalImg = evt.target.dataset.source;
 
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
     <img src="${modalImg}" width="800" height="600">
-`);
+`,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", handlerModalClose);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", handlerModalClose);
+      },
+    }
+  );
   instance.show();
 
-  closeModalbyEsc(instance);
+  function handlerModalClose(evt) {
+    if (evt.code !== "Escape") {
+      return;
+    }
+
+    instance.close();
+  }
 }
 
 function createGalleryItemsMarkup(arr) {
@@ -51,22 +67,4 @@ function createGalleryItemsMarkup(arr) {
       </li>`
     )
     .join("");
-}
-
-function closeModalbyEsc(modal) {
-  const isModalOpen = modal.visible();
-
-  if (isModalOpen) {
-    document.addEventListener("keydown", handlerModalClose);
-  } else if (!isModalOpen) {
-    document.removeEventListener("keydown", handlerModalClose);
-  }
-
-  function handlerModalClose(evt) {
-    if (evt.code !== "Escape") {
-      return;
-    }
-
-    modal.close();
-  }
 }
